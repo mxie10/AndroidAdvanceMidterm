@@ -32,10 +32,6 @@ public class ChatService extends Service {
         if (intent != null) {
             Bundle data = intent.getExtras();
             handleData(data);
-//            if (!wakeLock.isHeld()) {
-//                Log.v(TAG, "acquiring wake lock");
-//                wakeLock.acquire();
-//            }
         }
         return START_STICKY;
     }

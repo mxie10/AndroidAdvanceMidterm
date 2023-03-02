@@ -1,10 +1,14 @@
 package com.example.midterm;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +24,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String CHANNEL_ID = "channel_id";
+    private static final String CHANNEL_NAME = "channel_name";
+    private static final String CHANNEL_DESC = "channel_description";
     private MessageAdapter adapter;
     RecyclerView rv_messages;
     Button btn_send;
@@ -69,7 +76,29 @@ public class MainActivity extends AppCompatActivity {
             et_message.setText("");
             rv_messages.scrollToPosition(adapter.getItemCount() - 1);
             botResponse(message);
+
+            sendNotification(message);
         }
+    }
+
+    public void sendNotification(String message){
+        NotificationManager notificationManager = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
+
+        // Create a notification channel (required for Android Oreo and higher)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(CHANNEL_DESC);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Send Notification")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        // Show the notification
+        notificationManager.notify(1, builder.build());
     }
 
     public void botResponse(String message){
