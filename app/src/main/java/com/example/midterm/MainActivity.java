@@ -7,9 +7,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String CHANNEL_NAME = "channel_name";
     private static final String CHANNEL_DESC = "channel_description";
     private MessageAdapter adapter;
+    private BroadcastReceiver receiver;
     RecyclerView rv_messages;
     Button btn_send;
     EditText et_message;
@@ -42,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
         et_message = (EditText)findViewById(R.id.et_message);
         setRecyclerView();
         setClickEvents();
+        receiveBroadCast();
     }
-
     public void setRecyclerView(){
         adapter = new MessageAdapter(this,messagesList);
         rv_messages.setAdapter(adapter);
@@ -67,18 +72,41 @@ public class MainActivity extends AppCompatActivity {
             Bundle data = new Bundle();
             data.putInt(ChatService.CMD, ChatService.CMD_SEND_MESSAGE);
             data.putString(ChatService.KEY_MESSAGE_TEXT, message);
-            Intent intent = new Intent(this, ChatService.class);
-            intent.putExtras(data);
-            startService(intent);
-
-            //add message to list and get response from bot
             messagesList.add(new Message("SEND", message));
             et_message.setText("");
             rv_messages.scrollToPosition(adapter.getItemCount() - 1);
-            botResponse(message);
 
+            Intent intent = new Intent(this, ChatService.class);
+            intent.putExtras(data);
+            startService(intent);
+            //get broadcast content
+            //send notification
             sendNotification(message);
         }
+
+    }
+
+    private void receiveBroadCast(){
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(Constants.BROADCAST_NEW_MESSAGE)) {
+                    String message = intent.getStringExtra(Constants.CHAT_MESSAGE);
+                    botResponse(message);
+                }
+            }
+        };
+
+        // Register the BroadcastReceiver to receive the MY_BROADCAST action
+        IntentFilter filter = new IntentFilter(Constants.BROADCAST_NEW_MESSAGE);
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Unregister the BroadcastReceiver
+        unregisterReceiver(receiver);
     }
 
     public void sendNotification(String message){
@@ -102,9 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void botResponse(String message){
-        int time = (int) (System.currentTimeMillis());
-        Timestamp timestamp = new Timestamp(time);
-
+        Log.v("botResponse", "in botResponse???");
         new Thread(() -> {
             //Fake response delay
             try {
@@ -129,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     otherResponse = "Sorry, I don't understand.";
                     messagesList.add(new Message("RECEIVE",otherResponse));
+
                 }
                 //Scrolls us to the position of the latest message
                 rv_messages.scrollToPosition(adapter.getItemCount() - 1);

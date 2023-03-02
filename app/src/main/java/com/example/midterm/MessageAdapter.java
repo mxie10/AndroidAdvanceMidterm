@@ -1,6 +1,7 @@
 package com.example.midterm;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     // total number of rows
     @Override
     public int getItemCount() {
+        Log.v("getItemCount", messages.size()+"");
         return messages.size();
     }
 
