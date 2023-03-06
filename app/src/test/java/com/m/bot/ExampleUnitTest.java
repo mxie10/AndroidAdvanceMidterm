@@ -1,4 +1,4 @@
-package com.example.midterm;
+package com.m.bot;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.example.midterm;
+package com.m.bot;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.midterm.model.Message;
+import com.m.bot.model.Message;
 
 import java.util.List;
 

@@ -1,5 +1,4 @@
-package com.example.midterm;
-
+package com.m.bot;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,15 +13,15 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.midterm.model.Message;
-import com.example.midterm.service.ChatService;
+import com.m.bot.model.Message;
+import com.m.bot.service.ChatService;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,11 +48,32 @@ public class MainActivity extends AppCompatActivity {
         setClickEvents();
         receiveBroadCast();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.stop_service) {
+            Intent intent = new Intent(this, ChatService.class);
+            stopService(intent);
+            sendNotification("“ChatBot Stopped: 67”");
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public void setRecyclerView(){
         adapter = new MessageAdapter(this,messagesList);
         rv_messages.setAdapter(adapter);
         rv_messages.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
     }
 
     public void setClickEvents(){
@@ -79,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ChatService.class);
             intent.putExtras(data);
             startService(intent);
-            //get broadcast content
             //send notification
             sendNotification(message);
         }
@@ -145,10 +164,10 @@ public class MainActivity extends AppCompatActivity {
                 String response2 = "";
                 String response3 = "";
                 String otherResponse = "";
-                if(message.contains("Kevin")){
-                    response1 = "Hello Kevin!";
+                if(message.contains("Mingyuan")){
+                    response1 = "Hello Mingyuan!";
                     response2 = "How are you?";
-                    response3 = "Good Bye Kevin!";
+                    response3 = "Good Bye Mingyuan!";
                     messagesList.add(new Message("RECEIVE",response1));
                     messagesList.add(new Message("RECEIVE",response2));
                     messagesList.add(new Message("RECEIVE",response3));

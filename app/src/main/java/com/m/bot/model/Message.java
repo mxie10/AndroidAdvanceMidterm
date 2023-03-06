@@ -1,4 +1,4 @@
-package com.example.midterm.model;
+package com.m.bot.model;
 
 public class Message {
 

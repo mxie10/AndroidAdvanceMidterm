@@ -6,7 +6,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.midterm"
+        applicationId "com.m.bot"
         minSdk 30
         targetSdk 32
         versionCode 1

@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.m.bot.MainActivity">
+    <item
+        android:id="@+id/stop_service"
+        android:orderInCategory="100"
+        android:title="Stop Service"
+        app:showAsAction="never" />
+</menu>

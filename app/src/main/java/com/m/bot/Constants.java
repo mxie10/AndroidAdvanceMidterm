@@ -1,4 +1,4 @@
-package com.example.midterm;
+package com.m.bot;
 
 public interface Constants {
 
